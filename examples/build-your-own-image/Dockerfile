@@ -5,14 +5,6 @@
 # Base image for this is ubuntu 22.04
 FROM ubuntu:22.04
 
-# -------------------------------
-# Handle LabVIEW year properly
-# -------------------------------
-# ARG is for build-time (can be overridden with --build-arg)
-# ENV makes it available inside RUN and in the container
-ARG LV_YEAR=2026
-ENV LV_YEAR=${LV_YEAR}
-
 # Enable CICD Features
 ENV EnableCICDFeaturesForLabVIEW=TRUE
 
@@ -28,7 +20,8 @@ RUN apt-get update && \
     libglu1-mesa \
     libx11-6 \
     libxinerama1 \
-    xvfb
+    xvfb\
+    vim
     
 # Fix permission issues for X11
 RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
@@ -43,14 +36,25 @@ COPY Installer/* /home/execs/
 # Install and Setup LabVIEW
 ########################################################################################################################################################################################
 
+# -------------------------------
+# Handle LabVIEW year properly
+# -------------------------------
+# ARG is for build-time (can be overridden with --build-arg)
+# ENV makes it available inside RUN and in the container
+ARG LV_YEAR=2025
+ENV LV_YEAR=${LV_YEAR}
+
+
 # Install LabVIEW Pro, LabVIEWCLI, CEIP and VI Analyzer Toolkit
-RUN apt-get install -y /home/execs/ni-labview-${LV_YEAR}.deb && \
+RUN apt-get install -y /home/execs/ni-labview-2025-pro_25.3.2.49171-0+f19-ubuntu2204_all.deb && \
+    apt-get install -y /home/execs/ni-vivado-2021.1-cg_25.1.0.49343-0+f191-ubuntu2004_all.deb && \
     apt-get update && \
     apt-get install -y \
     ni-labview-${LV_YEAR}-pro \
     ni-labview-command-line-interface \
     ni-ceip \
-    ni-vialinux-labview-support
+    ni-vialinux-labview-support \
+    ni-vivado-2021.1-cg
     
 # Set necessary INI Tokens to support LabVIEWCLI
 # Enable VI Server
@@ -68,9 +72,15 @@ RUN echo "unattended=True" >> /root/natinst/.config/LabVIEW-${LV_YEAR}/labviewpr
 RUN mv -f /home/execs/settings.json /var/local/natinst/udc && \
     chmod 666 /var/local/natinst/udc/settings.json
 
+COPY NIFarmInfo.xml /usr/local/natinst/nifpgacompileworker/configuration/NIFarmInfo.xml
 ########################################################################################################################################################################################
 # Cleanup
 ########################################################################################################################################################################################
 
 # Remove installer and settings.json
 RUN rm -rf /home/execs/
+
+
+ENV TZ=America/New_York
+
+ENTRYPOINT [ "/usr/local/natinst/nifpgacompileworker/cw_wrapper.sh mono /usr/local/natinst/nifpgacompileworker/CompileWorker.exe"]
