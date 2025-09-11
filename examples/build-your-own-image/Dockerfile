@@ -1,3 +1,6 @@
+# copy /Y "C:\Program Files (x86)\National Instruments\FPGA\CompileWorker\configuration\NIFarmInfo.xml" "C:\Users\Mosaic\Documents\GitHub\labview-for-containers\examples\build-your-own-image\NIFarmInfo.xml" && docker build . -t fpgacompile
+# docker build . -t fpgacompile
+
 ########################################################################################################################################################################################
 # Setup Dependencies
 ########################################################################################################################################################################################
