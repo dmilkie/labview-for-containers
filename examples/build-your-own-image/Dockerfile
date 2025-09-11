@@ -83,4 +83,4 @@ RUN rm -rf /home/execs/
 
 ENV TZ=America/New_York
 
-ENTRYPOINT [ "/usr/local/natinst/nifpgacompileworker/cw_wrapper.sh mono /usr/local/natinst/nifpgacompileworker/CompileWorker.exe"]
+CMD ["/bin/bash", "/usr/local/natinst/nifpgacompileworker/cw_wrapper.sh", "mono", "/usr/local/natinst/nifpgacompileworker/CompileWorker.exe"]

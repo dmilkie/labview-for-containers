@@ -3,8 +3,8 @@
   <Version>1</Version>
   <ConnectionInfoHistory>
     <NIFarmEncryptedConnectionInfo>
-      <Hostname>localhost</Hostname>
-      <Username />
+      <Hostname>host.docker.internal</Hostname>
+      <Username>admin</Username>
       <EncryptedPassword>N24FsRv6dbVLVSjd0OxKcw==</EncryptedPassword>
       <SecureConnection>false</SecureConnection>
     </NIFarmEncryptedConnectionInfo>
