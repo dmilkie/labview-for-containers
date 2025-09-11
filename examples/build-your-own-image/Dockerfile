@@ -95,4 +95,12 @@ RUN rm -rf /home/execs/
 
 ENV TZ=America/New_York
 
+# discard "WARNING: Default location for XILINX_VIVADO_HLS not found" https://adaptivesupport.amd.com/s/article/64639?language=en_US
+ENV XILINX_VIVADO_HLS=1  
+ENV XILINX_HLS=1
+
+# attempted fix for "Routing Is Done. realloc(): invalid pointer  Abnormal program termination (6)" https://adaptivesupport.amd.com/s/article/000034450?language=en_US
+ENV LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1
+
+
 CMD ["/bin/bash", "/usr/local/natinst/nifpgacompileworker/cw_wrapper.sh", "mono", "/usr/local/natinst/nifpgacompileworker/CompileWorker.exe"]
