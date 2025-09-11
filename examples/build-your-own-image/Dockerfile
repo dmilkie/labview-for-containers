@@ -21,8 +21,18 @@ RUN apt-get update && \
     libx11-6 \
     libxinerama1 \
     xvfb\
-    vim
+    locales\
+    vim \
+    && rm -rf /var/lib/apt/lists/*
     
+# Set locale to UTF-8
+RUN locale-gen en_US.UTF-8 
+#     update-locale LANG=en_US.UTF-8
+# ENV LANG en_US.UTF-8
+# ENV LANGUAGE en_US:en   
+# ENV LC_ALL en_US.UTF-8
+
+
 # Fix permission issues for X11
 RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
 
@@ -45,7 +55,7 @@ ARG LV_YEAR=2025
 ENV LV_YEAR=${LV_YEAR}
 
 
-# Install LabVIEW Pro, LabVIEWCLI, CEIP and VI Analyzer Toolkit
+# Install LabVIEW Pro, LabVIEWCLI, CEIP and VI Analyzer Toolkit, NI Vivado 2021.1 FPGA compile worker
 RUN apt-get install -y /home/execs/ni-labview-2025-pro_25.3.2.49171-0+f19-ubuntu2204_all.deb && \
     apt-get install -y /home/execs/ni-vivado-2021.1-cg_25.1.0.49343-0+f191-ubuntu2004_all.deb && \
     apt-get update && \
@@ -54,7 +64,8 @@ RUN apt-get install -y /home/execs/ni-labview-2025-pro_25.3.2.49171-0+f19-ubuntu
     ni-labview-command-line-interface \
     ni-ceip \
     ni-vialinux-labview-support \
-    ni-vivado-2021.1-cg
+    ni-vivado-2021.1-cg \
+    && rm -rf /var/lib/apt/lists/*
     
 # Set necessary INI Tokens to support LabVIEWCLI
 # Enable VI Server
@@ -72,6 +83,7 @@ RUN echo "unattended=True" >> /root/natinst/.config/LabVIEW-${LV_YEAR}/labviewpr
 RUN mv -f /home/execs/settings.json /var/local/natinst/udc && \
     chmod 666 /var/local/natinst/udc/settings.json
 
+# Setup Vivado 2021.1 compile worker to connect to host server, with username admin and password <blank>, or change NIFarmInfo.xml as needed
 COPY NIFarmInfo.xml /usr/local/natinst/nifpgacompileworker/configuration/NIFarmInfo.xml
 ########################################################################################################################################################################################
 # Cleanup
